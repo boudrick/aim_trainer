@@ -7,6 +7,7 @@ from cible import Cible
 #CONST
 H_WIDTH, H_HEIGHT = 800, 600
 TARGET_MAX = 3
+FPS = 144
 
 # pygame setup
 pygame.init()
@@ -53,6 +54,6 @@ while running: # main loop
 
     pygame.display.flip()
 
-    dt = clock.tick(60) / 1000
+    dt = clock.tick(140)
 
 pygame.quit()
