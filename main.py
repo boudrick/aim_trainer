@@ -1,9 +1,12 @@
-# Example file showing a circle moving on screen
+import random
+
 import pygame
+
+from cible import Cible
 
 #CONST
 H_WIDTH, H_HEIGHT = 800, 600
-TARGET_MAX = 1
+TARGET_MAX = 3
 
 # pygame setup
 pygame.init()
@@ -12,7 +15,7 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-target_display = 0
+liste_cibles = []
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
@@ -27,13 +30,24 @@ while running: # main loop
 
 
     #traitement
-    if target_display < TARGET_MAX:
+    if pygame.mouse.get_pressed()[0]:
+        for cible in liste_cibles:
+            if cible.mouse_on_cible(mouse_pos):
+                liste_cibles.remove(cible)
+
+    if len(liste_cibles) < TARGET_MAX:
+        x = random.randint(0,H_WIDTH)
+        y = random.randint(0,H_HEIGHT)
+        liste_cibles.append(Cible(x,y))
         
 
 
 
     #affichage
     screen.fill("black")
+
+    for cible in liste_cibles:
+        cible.draw(screen)
 
     pygame.draw.circle(screen, "red", mouse_pos, 40, 3)
 
