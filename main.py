@@ -12,6 +12,14 @@ class Modes(Enum):
     SPHERE = 1
     PERSPECTIVE = 2
 
+def get_focus():
+    pygame.mouse.set_visible(False)
+    pygame.event.set_grab(True)
+
+def lost_focus():
+    pygame.mouse.set_visible(True)
+    pygame.event.set_grab(False)
+
 #CONST
 H_WIDTH, H_HEIGHT = 800, 600
 TARGET_MAX = 3
@@ -27,8 +35,10 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 curseur = Curseur()
-pygame.mouse.set_visible(False)
-pygame.event.set_grab(True)
+curseur.set_pos((H_WIDTH/2, H_HEIGHT/2))
+
+
+get_focus()
 
 liste_cibles = []
 
@@ -40,8 +50,11 @@ while running:# main loop
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_TAB:
                 running = False
+            if event.key == pygame.K_ESCAPE:
+                lost_focus()
+
         if event.type == pygame.WINDOWFOCUSLOST:
             print("WINDOWFOCUSLOST")
         if event.type == pygame.WINDOWTAKEFOCUS:
@@ -53,7 +66,7 @@ while running:# main loop
     #traitement
     if pygame.mouse.get_pressed()[0]: #click sur cible
         for cible in liste_cibles:
-            if cible.mouse_on_cible(mouse_pos):
+            if cible.mouse_on_cible(curseur.get_pos()):
                 liste_cibles.remove(cible)
 
     for cible in liste_cibles:
@@ -63,9 +76,6 @@ while running:# main loop
 
     if MODE == Modes.SPHERE:
         relatif = pygame.mouse.get_rel()
-        pygame.mouse.set_pos(H_WIDTH/2, H_HEIGHT/2)
-        _ = pygame.mouse.get_pos()
-        curseur.set_pos(pygame.mouse.get_pos())
         for cible in liste_cibles:
             cible.move_pos(relatif)
             pos_x, pos_y = cible.get_pos()
@@ -101,5 +111,3 @@ while running:# main loop
     dt = clock.tick(FPS)
 
 pygame.quit()
-
-
