@@ -19,8 +19,12 @@ class Cible:
     def get_pos(self):
         return self.x, self.y
 
+    def move_pos(self, relatif):
+        self.x += relatif[0]
+        self.y += relatif[1]
+
     def draw(self, screen):
-        pygame.draw.circle(screen, "red", (self.x, self.y), self.size)
+        pygame.draw.circle(screen, "red", self.get_pos(), self.size)
 
     def mouse_on_cible(self, mouse_pos):
         on_cible = self.size**2 >= (self.x-mouse_pos[0])**2 + (self.y - mouse_pos[1])**2
