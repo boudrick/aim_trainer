@@ -70,23 +70,23 @@ while running:# main loop
                 liste_cibles.remove(cible)
 
     for cible in liste_cibles:
-        cible.size -= REDUCTION
-        if cible.size <= 0:
+        progression = cible.progress()
+        if progression == 1:
             liste_cibles.remove(cible)
 
     if MODE == Modes.SPHERE:
         relatif = pygame.mouse.get_rel()
         for cible in liste_cibles:
-            cible.move_pos(relatif)
+            cible.move_pos(*relatif)
             pos_x, pos_y = cible.get_pos()
             if pos_x < 0:
-                cible.move_pos((H_WIDTH, 0))
+                cible.move_pos(H_WIDTH, 0)
             if pos_x > H_WIDTH:
-                cible.move_pos((-H_WIDTH, 0))
+                cible.move_pos(-H_WIDTH, 0)
             if pos_y < 0:
-                cible.move_pos((0, H_HEIGHT))
+                cible.move_pos(0, H_HEIGHT)
             if pos_y > H_HEIGHT:
-                cible.move_pos((0, -H_HEIGHT))
+                cible.move_pos(0, -H_HEIGHT)
 
 
     if MODE == Modes.STANDARD:
@@ -96,7 +96,11 @@ while running:# main loop
     if len(liste_cibles) < TARGET_MAX: #gestion du nombre de cible
         x = random.randint(0,H_WIDTH)
         y = random.randint(0,H_HEIGHT)
-        liste_cibles.append(Cible(x,y))
+
+        nouvelle_cible = Cible(x,y)
+        nouvelle_cible.set_step(FPS=FPS, temps=4)
+        nouvelle_cible.set_mode(Cible.Modes.SIZE)
+        liste_cibles.append(nouvelle_cible)
 
     #affichage
     screen.fill("black")
