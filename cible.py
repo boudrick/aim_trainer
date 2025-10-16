@@ -86,5 +86,5 @@ class Cible:
         return self._rayon
 
     def mouse_on_cible(self, mouse_pos):
-        on_cible = self._rayon**2 >= (self._x-mouse_pos[0])**2 + (self._y - mouse_pos[1])**2
+        on_cible = (self._rayon*(1 - self.get_progress()))**2 >= (self._x-mouse_pos[0])**2 + (self._y - mouse_pos[1])**2
         return on_cible

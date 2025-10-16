@@ -21,28 +21,25 @@ def lost_focus():
     pygame.event.set_grab(False)
 
 #CONST
-H_WIDTH, H_HEIGHT = 800, 600
 TARGET_MAX = 3
 FPS = 120
 SENS = 1
 MODE = Modes.SPHERE
 REDUCTION = 5/FPS #pixel/s
+SENSIBILITE = 0.4
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((H_WIDTH, H_HEIGHT))
+screen = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 running = True
 dt = 0
 curseur = Curseur()
-curseur.set_pos((H_WIDTH/2, H_HEIGHT/2))
-
 
 get_focus()
+curseur.set_pos((screen.get_width()/2, screen.get_height()/2))
 
 liste_cibles = []
-
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
 while running:# main loop
     #input
@@ -54,6 +51,9 @@ while running:# main loop
                 running = False
             if event.key == pygame.K_ESCAPE:
                 lost_focus()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_visible():
+                get_focus()
 
         if event.type == pygame.WINDOWFOCUSLOST:
             print("WINDOWFOCUSLOST")
@@ -75,18 +75,19 @@ while running:# main loop
             liste_cibles.remove(cible)
 
     if MODE == Modes.SPHERE:
-        relatif = pygame.mouse.get_rel()
+        curseur.set_pos((screen.get_width() / 2, screen.get_height() / 2))
+        relatif = [i*SENSIBILITE for i in pygame.mouse.get_rel()]
         for cible in liste_cibles:
             cible.move_pos(*relatif)
             pos_x, pos_y = cible.get_pos()
             if pos_x < 0:
-                cible.move_pos(H_WIDTH, 0)
-            if pos_x > H_WIDTH:
-                cible.move_pos(-H_WIDTH, 0)
+                cible.move_pos(screen.get_width(), 0)
+            if pos_x > screen.get_width():
+                cible.move_pos(-screen.get_width(), 0)
             if pos_y < 0:
-                cible.move_pos(0, H_HEIGHT)
-            if pos_y > H_HEIGHT:
-                cible.move_pos(0, -H_HEIGHT)
+                cible.move_pos(0, screen.get_height())
+            if pos_y > screen.get_height():
+                cible.move_pos(0, -screen.get_height())
 
 
     if MODE == Modes.STANDARD:
@@ -94,8 +95,8 @@ while running:# main loop
 
 
     if len(liste_cibles) < TARGET_MAX: #gestion du nombre de cible
-        x = random.randint(0,H_WIDTH)
-        y = random.randint(0,H_HEIGHT)
+        x = random.randint(0,screen.get_width())
+        y = random.randint(0,screen.get_height())
 
         nouvelle_cible = Cible(x,y)
         nouvelle_cible.set_step(FPS=FPS, temps=4)
